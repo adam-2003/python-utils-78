@@ -1,30 +1,26 @@
+import os
 import json
 
-def safe_divide(numerator, denominator):
-    if not isinstance(numerator, (int, float)):
-        raise ValueError('Numerator must be a number.')
-    if not isinstance(denominator, (int, float)):
-        raise ValueError('Denominator must be a number.')
-    if denominator == 0:
-        raise ZeroDivisionError('Denominator cannot be zero.')
-    return numerator / denominator
+
+def read_json(file_path):
+    with open(file_path, 'r') as f:
+        return json.load(f)
 
 
-def read_json_file(filepath):
-    try:
-        with open(filepath, 'r') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        raise FileNotFoundError('File not found. Invalid filepath.')
-    except json.JSONDecodeError:
-        raise ValueError('Invalid JSON format in file.')
+def write_json(file_path, data):
+    with open(file_path, 'w') as f:
+        json.dump(data, f, indent=4)
 
 
-def write_json_file(filepath, data):
-    if not isinstance(data, dict):
-        raise ValueError('Data must be a dictionary.')
-    try:
-        with open(filepath, 'w') as file:
-            json.dump(data, file)
-    except IOError as e:
-        raise IOError(f'Error writing to file: {e}')
+def ensure_directory_exists(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
+def flatten_list(nested_list):
+    return [item for sublist in nested_list for item in sublist]
+
+
+def generate_unique_id(prefix='id_'):
+    import uuid
+    return f'{prefix}{uuid.uuid4()}'
