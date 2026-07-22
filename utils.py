@@ -1,26 +1,32 @@
-import os
-import json
+from typing import List, Any
 
 
-def read_json(file_path):
-    with open(file_path, 'r') as f:
-        return json.load(f)
+def flatten(lst: List[Any]) -> List[Any]:
+    """Flatten a nested list into a flat list.
+
+    Args:
+        lst (List[Any]): A nested list.
+
+    Returns:
+        List[Any]: A flat list containing all the elements.
+    """
+    flat_list = []
+    for item in lst:
+        if isinstance(item, list):
+            flat_list.extend(flatten(item))
+        else:
+            flat_list.append(item)
+    return flat_list
 
 
-def write_json(file_path, data):
-    with open(file_path, 'w') as f:
-        json.dump(data, f, indent=4)
+def deduplicate(lst: List[Any]) -> List[Any]:
+    """Remove duplicates from a list while maintaining order.
 
+    Args:
+        lst (List[Any]): A list that may contain duplicates.
 
-def ensure_directory_exists(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-
-def flatten_list(nested_list):
-    return [item for sublist in nested_list for item in sublist]
-
-
-def generate_unique_id(prefix='id_'):
-    import uuid
-    return f'{prefix}{uuid.uuid4()}'
+    Returns:
+        List[Any]: A list with duplicates removed.
+    """
+    seen = set()
+    return [x for x in lst if not (x in seen or seen.add(x))]
