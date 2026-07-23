@@ -1,25 +1,27 @@
-from typing import Any, Optional
+import re
+
+def validate_email(email):
+    regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(regex, email) is not None
 
 
-def is_valid_email(email: str) -> bool:
-    """Validate an email address format."""
-    import re
-    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-    return re.match(pattern, email) is not None
+def validate_positive_integer(value):
+    return isinstance(value, int) and value > 0
 
 
-def is_positive_integer(value: Any) -> Optional[bool]:
-    """Check if the value is a positive integer."""
-    if isinstance(value, int) and value > 0:
-        return True
-    return False
+def validate_input(data):
+    if not validate_email(data.get('email', '')):
+        raise ValueError('Invalid email format')
+    if not validate_positive_integer(data.get('age', 0)):
+        raise ValueError('Age must be a positive integer')
+
+    return True
 
 
-def is_not_empty_string(value: Any) -> bool:
-    """Check if the value is a non-empty string."""
-    return isinstance(value, str) and bool(value.strip())
-
-
-def validate_user_data(email: str, age: Any) -> bool:
-    """Validate user data fields: email and age."""
-    return is_valid_email(email) and is_positive_integer(age)
+if __name__ == '__main__':
+    sample_data = {'email': 'user@example.com', 'age': 30}
+    try:
+        validate_input(sample_data)
+        print('Input is valid')
+    except ValueError as e:
+        print(f'Input validation error: {e}')
